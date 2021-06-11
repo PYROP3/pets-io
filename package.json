@@ -1,0 +1,37 @@
+{
+  "name": "projeto_integrado",
+  "version": "1.0.0",
+  "description": "University project",
+  "main": "Server.js",
+  "dependencies": {
+    "array-flatten": "^3.0.0",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.19.0",
+    "decode-google-map-polyline": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "email-templates": "^6.1.1",
+    "express": "^4.17.1",
+    "handlebars": "^4.7.6",
+    "jws": "^4.0.0",
+    "mongodb": "^3.6.2",
+    "nodemailer": "^6.4.6",
+    "nodemailer-express-handlebars": "^4.0.0",
+    "request-cookie": "^1.0.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "python -m pylint --rcfile=./script/.pylintrc_build --exit-zero script && echo \"OK!\"",
+    "start": "unset SESSION_MANAGER && node Server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PYROP3/ProjetoIntegrado.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PYROP3/ProjetoIntegrado/issues"
+  },
+  "homepage": "https://github.com/PYROP3/ProjetoIntegrado#readme"
+}

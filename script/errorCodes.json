@@ -1,0 +1,212 @@
+[
+    {
+        "Name": "Success",
+        "HttpReturn": 200,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Success",
+                "Description": "Operation succeeded"
+            },
+            "pt-br":{
+                "PrettyName": "Sucesso",
+                "Description": "Operação bem-sucedida"
+            }
+        }
+    },
+    {
+        "Name": "UnknownError",
+        "HttpReturn": 500,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Unknown Error",
+                "Description": "Operation failed due to an unexpected error"
+            },
+            "pt-br":{
+                "PrettyName": "Erro Desconhecido",
+                "Description": "Operação falhou devido a um erro inesperado"
+            }
+        }
+    },
+    {
+        "Name": "UnknownScriptError",
+        "HttpReturn": 500,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Unknown Error",
+                "Description": "Operation failed due to an error"
+            },
+            "pt-br":{
+                "PrettyName": "Erro Desconhecido",
+                "Description": "Operação falhou devido a um erro"
+            }
+        }
+    },
+    {
+        "Name": "ArgumentTypeError",
+        "HttpReturn": 400,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Argument Type Error",
+                "Description": "One of the supplied arguments is in an unexpected format"
+            },
+            "pt-br":{
+                "PrettyName": "Erro de tipo de argumento",
+                "Description": "Um dos argumentos fornecidos está em um formato inesperado"
+            }
+        }
+    },
+    {
+        "Name": "PrimaryKeyInUse",
+        "HttpReturn": 400,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Email in use",
+                "Description": "There is already an account with that email"
+            },
+            "pt-br":{
+                "PrettyName": "Email em uso",
+                "Description": "Já existe uma conta com este email"
+            }
+        }
+    },
+    {
+        "Name": "NoSuchPrimaryKey",
+        "HttpReturn": 400,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Unknown email",
+                "Description": "There is no account associated with that email"
+            },
+            "pt-br":{
+                "PrettyName": "Email desconhecido",
+                "Description": "Não existe uma conta associada a esse email"
+            }
+        }
+    },,
+    {
+        "Name": "ValidationFailed",
+        "HttpReturn": 400,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Account validation failed",
+                "Description": "Check the URL and try again"
+            },
+            "pt-br":{
+                "PrettyName": "Validacao de conta falhou",
+                "Description": "Verifique a URL e tente novamente"
+            }
+        }
+    },
+    {
+        "Name": "InvalidCredentials",
+        "HttpReturn": 401,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Invalid credentials",
+                "Description": "Check the username and password and try again"
+            },
+            "pt-br":{
+                "PrettyName": "Credenciais invalidas",
+                "Description": "Verifique os dados e tente novamente"
+            }
+        }
+    },
+    {
+        "Name": "NoAuthorizationToken",
+        "HttpReturn": 401,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Not logged in",
+                "Description": "Log in and try again"
+            },
+            "pt-br":{
+                "PrettyName": "Nao esta logado",
+                "Description": "Faca login e entre novamente"
+            }
+        }
+    },
+    {
+        "Name": "AuthorizationNotRecognized",
+        "HttpReturn": 401,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Not logged in",
+                "Description": "Log in and try again"
+            },
+            "pt-br":{
+                "PrettyName": "Nao esta logado",
+                "Description": "Faca login e entre novamente"
+            }
+        }
+    },
+    {
+        "Name": "MalformedToken",
+        "HttpReturn": 401,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Malformed token",
+                "Description": "Check the token and try again"
+            },
+            "pt-br":{
+                "PrettyName": "Token mal-formado",
+                "Description": "Verifique o token e tente noovamente"
+            }
+        }
+    },
+    {
+        "Name": "SessionNotFound",
+        "HttpReturn": 401,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Session not found",
+                "Description": "Check the token and try again"
+            },
+            "pt-br":{
+                "PrettyName": "Sessao nao encontrada",
+                "Description": "Verifique o token e tente noovamente"
+            }
+        }
+    },
+    {
+        "Name": "ActiveSessionFound",
+        "HttpReturn": 409,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Active Session Found",
+                "Description": "There is already a session for this user"
+            },
+            "pt-br":{
+                "PrettyName": "Sessão ativa encontrada",
+                "Description": "Já existe uma sessão para este usuário"
+            }
+        }
+    },
+    {
+        "Name": "MismatchedData",
+        "HttpReturn": 400,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Mismatched Data",
+                "Description": "Did not find data as it was expected"
+            },
+            "pt-br":{
+                "PrettyName": "Dados não pareados",
+                "Description": "Dados não foram encontrados como esperado"
+            }
+        }
+    }
+    {
+        "Name": "NotImplemented",
+        "HttpReturn": 501,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Not implemented",
+                "Description": "This functionality is not yet available"
+            },
+            "pt-br":{
+                "PrettyName": "Não implementado",
+                "Description": "Esta funcionalidade não está disponível ainda"
+            }
+        }
+    }
+]
