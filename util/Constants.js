@@ -21,7 +21,7 @@ module.exports.SCRIPT_ERRORS_PATH   = module.exports.SCRIPT_PATH + "errorCodes.j
 module.exports.DEFAULT_LOCALE = "en-us";
 
 // Mailer data
-module.exports.SOURCE_EMAIL_ADDRESS = "pets.io@gmail.com";
+module.exports.SOURCE_EMAIL_ADDRESS = "pets.io.tcc@gmail.com";
 module.exports.SOURCE_EMAIL_SERVICE = "gmail";
 module.exports.SOURCE_EMAIL_HOST    = "smtp.gmail.com";
 
@@ -44,7 +44,4 @@ module.exports.MONGO_COLLECTION_PENDING_USERS = "pendingUsers";
 module.exports.MONGO_COLLECTION_PENDING_RECOVER_PASS = "passwordNonces";
 
 module.exports.SERVER_PORT_DEFAULT = 8080
-module.exports.SERVER_URL_DEFAULT = "http://localhost:"+module.exports.SERVER_PORT_DEFAULT
-
-module.exports.SERVER_URL_DEPLOY = "https://pets-io.herokuapp.com"
-
+module.exports.SERVER_URL_DEFAULT = "https://pets-io.herokuapp.com"
