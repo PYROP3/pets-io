@@ -1,7 +1,7 @@
 {
-  "name": "projeto_integrado",
+  "name": "pets-io",
   "version": "1.0.0",
-  "description": "University project",
+  "description": "University thesis project",
   "main": "Server.js",
   "dependencies": {
     "array-flatten": "^3.0.0",
@@ -11,10 +11,10 @@
     "dotenv": "^8.2.0",
     "email-templates": "^6.1.1",
     "express": "^4.17.1",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "jws": "^4.0.0",
     "mongodb": "^3.6.2",
-    "nodemailer": "^6.4.6",
+    "nodemailer": "^6.6.1",
     "nodemailer-express-handlebars": "^4.0.0",
     "request-cookie": "^1.0.0",
     "winston": "^3.2.1"
@@ -26,12 +26,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PYROP3/ProjetoIntegrado.git"
+    "url": "git+https://github.com/PYROP3/pets-io.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/PYROP3/ProjetoIntegrado/issues"
+    "url": "https://github.com/PYROP3/pets-io/issues"
   },
-  "homepage": "https://github.com/PYROP3/ProjetoIntegrado#readme"
+  "homepage": "https://github.com/PYROP3/pets-io#readme"
 }
