@@ -82,7 +82,7 @@
                 "Description": "Não existe uma conta associada a esse email"
             }
         }
-    },,
+    },
     {
         "Name": "ValidationFailed",
         "HttpReturn": 400,
@@ -194,7 +194,7 @@
                 "Description": "Dados não foram encontrados como esperado"
             }
         }
-    }
+    },
     {
         "Name": "NotImplemented",
         "HttpReturn": 501,
