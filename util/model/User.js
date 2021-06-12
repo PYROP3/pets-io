@@ -1,9 +1,9 @@
 module.exports.User = class {
-    constructor(email, name, password, pic) {
+    constructor(email, name, password, numberOfPets) {
         this._email    = email;
         this._name     = name;
         this._password = password;
-        this._pic      = pic;
+        this._pets     = numberOfPets;
     }
 
     toJSON() {
@@ -11,7 +11,7 @@ module.exports.User = class {
             'email':this._email,
             'name':this._name,
             'password':this._password,
-            'pic':this._pic
+            'numberOfPets':this._pets
         }
     }
 }

@@ -103,7 +103,7 @@ server.post(Constants.CREATE_ACCOUNT_REQUEST, async function(req, res) {
     } else {
         sendErrorMessage("Success", req, res); //TODO find a better way to reply
         var replacements = {
-            mainURL: Constants.SERVER_URL_DEPLOY,
+            mainURL: Constants.SERVER_URL_DEFAULT,
             name: newUser['name'],
             authToken: newUser['authToken']
        };
@@ -201,7 +201,7 @@ server.post(Constants.RECOVER_PASS_NONCE_REQUEST, async function(req, res) {
         aux["passwordNonce"] = result;
 
         var replacements = {
-            mainURL: Constants.SERVER_URL_DEPLOY,
+            mainURL: Constants.SERVER_URL_DEFAULT,
             name: findResult['name'],
             passwordNonce: findResult['passwordNonce']
        };
