@@ -59,6 +59,19 @@ function sendOKMessage(request, response) {
     response.status(error["HttpReturn"]).header("Content-Type", "application/json").send(JSON.stringify(thisErr));
 }
 
+//Email-Template
+var readHTMLFile = function(path, callback) {
+    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+        if (err) {
+            throw err;
+            callback(err);
+        }
+        else {
+            callback(null, html);
+        }
+    });
+};
+
 // =================================== Requests ===================================
 
 server.post(Constants.CREATE_ACCOUNT_REQUEST, async function(req, res) {
