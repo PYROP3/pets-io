@@ -108,13 +108,13 @@ const load = async () => {
         result = await module.exports.db.collection('sessions').findOne({
             [Constants.USER_EMAIL_KEY]:user
         });
-        logger.debug(result);
-        if (result != null) { return result[Constants.AUTH_TOKEN_KEY]; }
+        logger.debug("session already active", result);
+        if (result != null) { return JSON.stringify(result); }
 
         let token = serverUtils.generateToken(Constants.AUTH_TOKEN_LENGTH);
         result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).insertOne({
             [Constants.USER_EMAIL_KEY]:user,
-            [Constants.AUTH_TOKEN_KEY]:token,
+            [Constants.USER_TOKEN_KEY]:token,
             [Constants.TIMESTAMP_KEY]:Date.now()
         });
         logger.debug("Created session: " + JSON.stringify(result));
@@ -128,7 +128,7 @@ const load = async () => {
      * @param token {String} Token to be authenticated
      */
     module.exports.validateSession = async function(token) {
-        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).findOne({[Constants.AUTH_TOKEN_KEY]:token});
+        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).findOne({[Constants.USER_TOKEN_KEY]:token});
         logger.debug("Got result", result);
         return result;
     }
@@ -140,7 +140,7 @@ const load = async () => {
      * @param user {String} Primary key identifying the user to be checked
      */
     module.exports.validateUserSession = async function(token, user) {
-        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).findOne({[Constants.USER_EMAIL_KEY]:user, [Constants.AUTH_TOKEN_KEY]:token});
+        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).findOne({[Constants.USER_EMAIL_KEY]:user, [Constants.USER_TOKEN_KEY]:token});
         if (result) {
             return true
         }
@@ -153,7 +153,7 @@ const load = async () => {
      * @param token {String} Token to be de-authenticated
      */
     module.exports.destroySession = async function(token) {
-        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).findOneAndDelete({[Constants.AUTH_TOKEN_KEY]:token});
+        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).findOneAndDelete({[Constants.USER_TOKEN_KEY]:token});
         if (result.value) {
             return result
         }
