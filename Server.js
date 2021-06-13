@@ -135,13 +135,15 @@ server.get(Constants.VERIFY_ACCOUNT_REQUEST, async function(req, res) {
         auth = auth['value'];
         logger.info("Validating user : ", auth);
         delete(auth[Constants.USER_TOKEN_KEY]);
-        await mongo.db.collection('users').insertOne(new userModel.User(
+        let newUser = new userModel.User(
             auth[Constants.USER_EMAIL_KEY], 
             auth[Constants.USER_NAME_KEY],  
             auth[Constants.USER_PASS_KEY],
-            auth[Constants.USER_N_PETS_KEY],
+            0,
             auth[Constants.USER_N_DEVICES_KEY]
-        ).toJSON());
+        ).toJSON();
+        newUser[Constants.USER_PENDING_PETS_KEY] = auth[Constants.USER_N_PETS_KEY];
+        await mongo.db.collection('users').insertOne(newUser);
         sendErrorMessage("Success", req, res);
     }
 });
@@ -172,6 +174,25 @@ server.get(Constants.DEAUTH_REQUEST, async function(req, res) {
     }
 
     let result = await mongo.destroySession(authToken);
+
+    if (result == null) {
+        sendErrorMessage("SessionNotFound", req, res);
+        return;
+    }
+    
+    sendErrorMessage("Success", req, res);
+});
+
+server.get(Constants.GET_PENDING_PETS_REQUEST, async function(req, res) {
+    let authToken = serverUtils.parseAuthToken(req.get("Authorization"));
+    logger.debug("Got authorization = " + req.get("Authorization"));
+
+    if (authToken == null) {
+        sendErrorMessage("MalformedToken", req, res);
+        return;
+    }
+
+    let result = await mongo.getPendingPets(authToken);
 
     if (result == null) {
         sendErrorMessage("SessionNotFound", req, res);

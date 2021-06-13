@@ -161,6 +161,19 @@ const load = async () => {
     }
 
     /**
+     * Consults number of pets user informed during registration to send the pictures
+     *
+     * @param token {String} Token to be de-authenticated
+     */
+    module.exports.getPendingPets = async function(token) {
+        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS).findOne({[Constants.USER_TOKEN_KEY]:token});
+        if (result.value) {
+            return result.value[Constants.USER_PENDING_PETS_KEY]
+        }
+        return null
+    }
+
+    /**
      * Generate a nonce used to reset a forgotten password
      *
      * @param email {String} Email associated with the account that will reset password

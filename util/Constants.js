@@ -8,6 +8,7 @@ module.exports.DEAUTH_REQUEST              = "/deauth";
 module.exports.RECOVER_PASS_NONCE_REQUEST  = "/recoverPasswordNonce";
 module.exports.RECOVER_PASS_REQUEST        = "/recoverPassword";
 module.exports.EVENT_TRIGGERED_REQUEST     = "/eventTriggered";
+module.exports.GET_PENDING_PETS_REQUEST    = "/getPendingPets";
 
 // Scripts
 module.exports.SCRIPT_PATH = "script/"
@@ -27,13 +28,14 @@ module.exports.SOURCE_EMAIL_SERVICE = "gmail";
 module.exports.SOURCE_EMAIL_HOST    = "smtp.gmail.com";
 
 // Mongo keys
-module.exports.USER_NAME_KEY      = "UserName";
-module.exports.USER_TOKEN_KEY     = "UserToken";
-module.exports.USER_N_PETS_KEY    = "UserNPets";
-module.exports.USER_N_DEVICES_KEY = "UserNDevices";
-module.exports.USER_EMAIL_KEY     = "UserEmail";
-module.exports.USER_PASS_KEY      = "UserPass";
-module.exports.USER_TIMESTAMP_KEY = "Timestamp";
+module.exports.USER_NAME_KEY         = "UserName";
+module.exports.USER_TOKEN_KEY        = "UserToken";
+module.exports.USER_N_PETS_KEY       = "UserNPets";
+module.exports.USER_PENDING_PETS_KEY = "UserPendingPets";
+module.exports.USER_N_DEVICES_KEY    = "UserNDevices";
+module.exports.USER_EMAIL_KEY        = "UserEmail";
+module.exports.USER_PASS_KEY         = "UserPass";
+module.exports.USER_TIMESTAMP_KEY    = "Timestamp";
 
 // Authentication info
 module.exports.AUTH_TOKEN_LENGTH = 64;
