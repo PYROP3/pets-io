@@ -115,7 +115,7 @@ const load = async () => {
         result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).insertOne({
             [Constants.USER_EMAIL_KEY]:user,
             [Constants.USER_TOKEN_KEY]:token,
-            [Constants.TIMESTAMP_KEY]:Date.now()
+            [Constants.USER_TIMESTAMP_KEY]:Date.now()
         });
         logger.debug("Created session: " + JSON.stringify(result));
         if (result == null) { return serverUtils.findErrorByName("UnknownError"); }
@@ -166,9 +166,15 @@ const load = async () => {
      * @param token {String} Token to be de-authenticated
      */
     module.exports.getPendingPets = async function(token) {
-        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS).findOne({[Constants.USER_TOKEN_KEY]:token});
+        let userSession = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS)
+            .findOne({[Constants.USER_TOKEN_KEY]:token})
+        if (!result.value) {
+            return null;
+        }
+        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS)
+            .findOne({[Constants.Constants.USER_EMAIL_KEY]:userSession.value[Constants.USER_EMAIL_KEY]});
         if (result.value) {
-            return result.value[Constants.USER_PENDING_PETS_KEY]
+            return result.value[Constants.USER_PENDING_PETS_KEY];
         }
         return null
     }
@@ -188,7 +194,7 @@ const load = async () => {
         result = await module.exports.db.collection(Constants.MONGO_COLLECTION_PENDING_RECOVER_PASS).insertOne({
             [Constants.USER_EMAIL_KEY]:email, 
             "passwordNonce":nonce,
-            [Constants.TIMESTAMP_KEY]:Date.now()
+            [Constants.USER_TIMESTAMP_KEY]:Date.now()
         })
         logger.debug("generatePasswordRecoveryNonce insertOne result =", result);
         return result.ops[0]["passwordNonce"];
