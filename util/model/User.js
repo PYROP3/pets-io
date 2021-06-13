@@ -1,3 +1,5 @@
+const Constants = require("../Constants");
+
 module.exports.User = class {
     constructor(email, name, password, numberOfPets, numberOfDevices) {
         this._email    = email;
@@ -9,11 +11,11 @@ module.exports.User = class {
 
     toJSON() {
         return {
-            'email':this._email,
-            'name':this._name,
-            'password':this._password,
-            'numberOfPets':this._pets,
-            'numberOfDevices':this._devices
+            [Constants.USER_EMAIL_KEY]:this._email,
+            [Constants.USER_NAME_KEY]:this._name,
+            [Constants.USER_PASS_KEY]:this._password,
+            [Constants.USER_N_PETS_KEY]:this._pets,
+            [Constants.USER_N_DEVICES_KEY]:this._devices
         }
     }
 }
