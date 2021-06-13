@@ -79,7 +79,7 @@ const load = async () => {
      * @param user {String} Primary key identifying the user to be checked
      */
     module.exports.checkForSession = function(user) {
-        let key = Constants.USER_PRIMARY_KEY;
+        let key = Constants.USER_EMAIL_KEY;
         let result = module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).findOne({key:user});
         if (result) {
             return true
@@ -99,26 +99,26 @@ const load = async () => {
         logger.debug("[createSession] Pass: " + serverUtils.saltAndHashPassword(user, password))
       
         let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS).findOne({
-            [Constants.USER_PRIMARY_KEY]:user,
-            [Constants.USER_PASSWORD_KEY]:serverUtils.saltAndHashPassword(user, password)
+            [Constants.USER_EMAIL_KEY]:user,
+            [Constants.USER_PASS_KEY]:serverUtils.saltAndHashPassword(user, password)
         });
         if (result == null) { return serverUtils.findErrorByName("InvalidCredentials"); }
 
         // Check if there is not a session active for the user
         result = await module.exports.db.collection('sessions').findOne({
-            [Constants.USER_PRIMARY_KEY]:user
+            [Constants.USER_EMAIL_KEY]:user
         });
         logger.debug(result);
-        if (result != null) { result[Constants.AUTH_TOKEN_KEY]; }
+        if (result != null) { return result[Constants.AUTH_TOKEN_KEY]; }
 
         let token = serverUtils.generateToken(Constants.AUTH_TOKEN_LENGTH);
         result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).insertOne({
-            [Constants.USER_PRIMARY_KEY]:user,
+            [Constants.USER_EMAIL_KEY]:user,
             [Constants.AUTH_TOKEN_KEY]:token,
             [Constants.TIMESTAMP_KEY]:Date.now()
         });
         logger.debug("Created session: " + JSON.stringify(result));
-        if (result == null) { return null; }
+        if (result == null) { return serverUtils.findErrorByName("UnknownError"); }
         return token;
     }
 
@@ -140,7 +140,7 @@ const load = async () => {
      * @param user {String} Primary key identifying the user to be checked
      */
     module.exports.validateUserSession = async function(token, user) {
-        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).findOne({[Constants.USER_PRIMARY_KEY]:user, [Constants.AUTH_TOKEN_KEY]:token});
+        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).findOne({[Constants.USER_EMAIL_KEY]:user, [Constants.AUTH_TOKEN_KEY]:token});
         if (result) {
             return true
         }
@@ -166,14 +166,14 @@ const load = async () => {
      * @param email {String} Email associated with the account that will reset password
      */
     module.exports.generatePasswordRecoveryNonce = async function(email) {
-        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS).findOne({[Constants.USER_PRIMARY_KEY]:email});
+        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS).findOne({[Constants.USER_EMAIL_KEY]:email});
         if (result == null) {
             logger.error("generatePasswordRecoveryNonce PK not found!");
             return null;
         }
         let nonce = serverUtils.generateToken(Constants.AUTH_TOKEN_LENGTH);
         result = await module.exports.db.collection(Constants.MONGO_COLLECTION_PENDING_RECOVER_PASS).insertOne({
-            [Constants.USER_PRIMARY_KEY]:email, 
+            [Constants.USER_EMAIL_KEY]:email, 
             "passwordNonce":nonce,
             [Constants.TIMESTAMP_KEY]:Date.now()
         })
@@ -194,53 +194,26 @@ const load = async () => {
         }
         let aux = result.value;
         result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS).findOneAndUpdate(
-            {[Constants.USER_PRIMARY_KEY]:aux[Constants.USER_PRIMARY_KEY]},
-            {"$set":{[Constants.USER_PASSWORD_KEY]:newPassword}}
+            {[Constants.USER_EMAIL_KEY]:aux[Constants.USER_EMAIL_KEY]},
+            {"$set":{[Constants.USER_PASS_KEY]:newPassword}}
         );
         return result.value;
     }
 
     /*
-     * Get all stored date related to a user
+     * Get all stored data related to a user
      *
      * @param user {String} Primary key identifying the user
      */
     module.exports.getUser = async function(user) {
         // Check for correct credentials
         let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS).findOne({
-            [Constants.USER_PRIMARY_KEY]:user
+            [Constants.USER_EMAIL_KEY]:user
         });
         logger.debug("Got user data =", result);
         if (result == null) { return serverUtils.findErrorByName("InvalidCredentials"); }
         
         return result;
-    }
-
-    if (serverUtils.isLocalEnvironment) {
-        // Tests
-        var user = "caiotsan@gmail.com"
-        var password = "HelloWorld"
-
-        logger.info("Salted password: " + serverUtils.saltAndHashPassword(user, password))
-        logger.info("Destroying nonexistent session ", await module.exports.destroySession("abc"));
-
-        var tok = await module.exports.createSession(user, password);
-        logger.info("Created session, token = ", tok);
-
-        var res = await module.exports.validateSession(tok);
-        logger.info("Checking for session: " + (res ? "ok" : "fail"));
-
-        var res = await module.exports.validateUserSession(tok, "caiotsan@gmail.com");
-        logger.info("Checking for user session: " + (res ? "ok" : "fail"));
-
-        var res = await module.exports.validateUserSession(tok, "bgmarini@hotmail.com");
-        logger.info("Checking for wrong user session: " + (res ? "ok" : "fail"));
-
-        var res = await module.exports.destroySession(tok);
-        logger.info("Destroying session " + (res ? "ok" : "fail"));
-        
-        var res = await module.exports.destroySession(tok);
-        logger.info("Destroying session again " + (res ? "ok" : "fail"));
     }
 }
 

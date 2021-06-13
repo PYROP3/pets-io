@@ -133,37 +133,6 @@ module.exports.request = function (reqUrl) {
     });
 }
 
-// /**
-//  * Get a single message from an IPC message queue
-//  *
-//  * @param queue {posixmq} message queue to fetch the message
-//  */
-// module.exports.getMessageFromQueue = function (queue) {
-//     console.log("Getting msg")
-//     return new Promise((resolve, reject) => {
-//         let n;
-//         let readbuf = Buffer.alloc(queue.msgsize);
-//         let waiting = true;
-
-//         queue.on('messages', () => {
-//             if (waiting) {
-//                 let msg;
-//                 n = queue.shift(readbuf);
-//                 if (n === false) {
-//                     reject("No messages");
-//                 }
-//                 msg = readbuf.toString('utf8', 0, n);
-//                 console.log("Received message("+ n +" bytes): " + msg);
-//                 waiting = false;
-//                 // Reset events
-//                 queue.on('messages', () => {});
-//                 resolve(msg);
-//             }
-//             reject("Not waiting");
-//         });
-//     });
-// }
-
 /*
  * Return a default, b64-encoded, profile picture in case user has not provided one
  */

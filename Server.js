@@ -76,43 +76,43 @@ var readHTMLFile = function(path, callback) {
 
 server.post(Constants.CREATE_ACCOUNT_REQUEST, async function(req, res) {
     let data = req.body;
-    let authToken = req.token;
     
-    let findResult = await mongo.db.collection('users').findOne({[Constants.USER_PRIMARY_KEY]:data[Constants.USER_PRIMARY_KEY]});
+    let findResult = await mongo.db.collection('users').findOne({[Constants.USER_EMAIL_KEY]:data[Constants.USER_EMAIL_KEY]});
     if (findResult) {
-        logger.info("Account requested for PK ("  + Constants.USER_PRIMARY_KEY + ") " + data[Constants.USER_PRIMARY_KEY] + " already in use");
-        sendErrorMessage("PrimaryKeyInUse", req, res); //TODO find a better way to reply
+        logger.info("Account requested for PK ("  + Constants.USER_EMAIL_KEY + ") " + data[Constants.USER_EMAIL_KEY] + " already in use");
+        sendErrorMessage("PrimaryKeyInUse", req, res);
         return 
     }
 
     var newUser = new userModel.User(
-        data[Constants.USER_PRIMARY_KEY], 
+        data[Constants.USER_EMAIL_KEY], 
         data[Constants.USER_NAME_KEY], 
         serverUtils.saltAndHashPassword(
-            data[Constants.USER_PRIMARY_KEY], 
-            data[Constants.USER_PASSWORD_KEY]
+            data[Constants.USER_EMAIL_KEY], 
+            data[Constants.USER_PASS_KEY]
         ),
-        data[Constants.USER_PIC_KEY]
+        data[Constants.USER_N_PETS_KEY],
+        0
     ).toJSON();
-    newUser['authToken'] = serverUtils.generateToken(32);
-    logger.info("Creating user : " + newUser[Constants.USER_PRIMARY_KEY]);
+    newUser[Constants.USER_TOKEN_KEY] = serverUtils.generateToken(32);
+    logger.info("Creating user : " + newUser[Constants.USER_EMAIL_KEY]);
     logger.debug("Creating user :", newUser);
     let result = await mongo.db.collection('pendingUsers').insertOne(newUser);
     if (result == null) {
         sendErrorMessage("UnknownError", req, res);
     } else {
-        sendErrorMessage("Success", req, res); //TODO find a better way to reply
+        sendErrorMessage("Success", req, res);
         var replacements = {
             mainURL: Constants.SERVER_URL_DEFAULT,
-            name: newUser['name'],
-            authToken: newUser['authToken']
+            name: newUser[Constants.USER_NAME_KEY],
+            authToken: newUser[Constants.USER_TOKEN_KEY]
        };
         readHTMLFile(__dirname + '/util/templates/validation.handlebars', function(err, html) {
             var template = handlebars.compile(html);
             var htmlToSend = template(replacements);
             mailer.sendMail({
             from: Constants.SOURCE_EMAIL_ADDRESS,
-            to: newUser['email'],
+            to: newUser[Constants.USER_EMAIL_KEY],
             subject: 'Confirmação de conta pets.io',
             html: htmlToSend,
             });
@@ -128,37 +128,38 @@ server.get(Constants.VERIFY_ACCOUNT_REQUEST, async function(req, res) {
         return;
     }
 
-    let auth = await mongo.db.collection('pendingUsers').findOneAndDelete({'authToken':authToken});
+    let auth = await mongo.db.collection('pendingUsers').findOneAndDelete({[Constants.USER_TOKEN_KEY]:authToken});
     if (auth == null) {
         sendErrorMessage("ValidationFailed", req, res);
     } else {
         auth = auth['value'];
         logger.info("Validating user : ", auth);
-        delete(auth['authToken']);
+        delete(auth[Constants.USER_TOKEN_KEY]);
         await mongo.db.collection('users').insertOne(new userModel.User(
-            auth[Constants.USER_PRIMARY_KEY], 
+            auth[Constants.USER_EMAIL_KEY], 
             auth[Constants.USER_NAME_KEY],  
-            auth[Constants.USER_PASSWORD_KEY],
-            auth[Constants.USER_PIC_KEY]
+            auth[Constants.USER_PASS_KEY],
+            auth[Constants.USER_N_PETS_KEY],
+            auth[Constants.USER_N_DEVICES_KEY]
         ).toJSON());
-        sendErrorMessage("Success", req, res); //TODO find a better way to reply
+        sendErrorMessage("Success", req, res);
     }
 });
 
 server.post(Constants.AUTH_REQUEST, async function(req, res) {
     let data = req.body;
-    let authResult = await mongo.createSession(data[Constants.USER_PRIMARY_KEY], data[Constants.USER_PASSWORD_KEY]);
+    let authResult = await mongo.createSession(data[Constants.USER_EMAIL_KEY], data[Constants.USER_PASS_KEY]);
     logger.debug("Authentication result for " + JSON.stringify(data) + " is ", authResult)
     if (typeof(authResult) === 'string') {
-        let userData = await mongo.getUser(data[Constants.USER_PRIMARY_KEY]);
-        delete(userData[Constants.USER_PASSWORD_KEY]) // Remove user password from response
+        let userData = await mongo.getUser(data[Constants.USER_EMAIL_KEY]);
+        delete(userData[Constants.USER_PASS_KEY]) // Remove user password from response
         delete(userData["_id"]) // Remove mongo document id
         // logger.debug("Got user data =", userData)
         userData[Constants.AUTH_TOKEN_KEY] = authResult;
         res.status(200).header("Content-Type", "application/json").send(JSON.stringify(userData));
     } else {
         logger.debug("Authentication result for " + JSON.stringify(data) + " is", authResult)
-        sendErrorMessage(authResult['id'], req, res);
+        sendErrorMessage(authResult, req, res);
     }
 });
 
@@ -178,25 +179,25 @@ server.get(Constants.DEAUTH_REQUEST, async function(req, res) {
         return;
     }
     
-    sendErrorMessage("Success", req, res); //TODO find a better way to reply
+    sendErrorMessage("Success", req, res);
 });
 
 server.post(Constants.RECOVER_PASS_NONCE_REQUEST, async function(req, res) {
     let data = req.body;
-    logger.info("Password recovery requested for email " + data[Constants.USER_PRIMARY_KEY]);
+    logger.info("Password recovery requested for email " + data[Constants.USER_EMAIL_KEY]);
     
-    let findResult = await mongo.db.collection(Constants.MONGO_COLLECTION_USERS).findOne({[Constants.USER_PRIMARY_KEY]:data[Constants.USER_PRIMARY_KEY]});
+    let findResult = await mongo.db.collection(Constants.MONGO_COLLECTION_USERS).findOne({[Constants.USER_EMAIL_KEY]:data[Constants.USER_EMAIL_KEY]});
     if (findResult == null) {
-        logger.info("Password recovery requested for email " + data[Constants.USER_PRIMARY_KEY] + " not found");
-        sendErrorMessage("NoSuchPrimaryKey", req, res); //TODO find a better way to reply
+        logger.info("Password recovery requested for email " + data[Constants.USER_EMAIL_KEY] + " not found");
+        sendErrorMessage("NoSuchPrimaryKey", req, res);
         return 
     }
 
-    let result = await mongo.generatePasswordRecoveryNonce(data[Constants.USER_PRIMARY_KEY]);
+    let result = await mongo.generatePasswordRecoveryNonce(data[Constants.USER_EMAIL_KEY]);
     if (result == null) {
         sendErrorMessage("UnknownError", req, res);
     } else {
-        sendErrorMessage("Success", req, res); //TODO find a better way to reply
+        sendErrorMessage("Success", req, res);
         let aux = findResult;
         aux["passwordNonce"] = result;
 
@@ -220,10 +221,10 @@ server.post(Constants.RECOVER_PASS_NONCE_REQUEST, async function(req, res) {
 
 server.post(Constants.RECOVER_PASS_REQUEST, async function(req, res) {
     let data = req.body;
-    let authResult = await mongo.recoverPassword(data["token"], data[Constants.USER_PASSWORD_KEY]);
+    let authResult = await mongo.recoverPassword(data["token"], data[Constants.USER_PASS_KEY]);
     logger.debug("Password recovery result for " + JSON.stringify(data) + " is " + String(authResult))
     if (authResult) {
-        sendErrorMessage("Success", req, res)
+        sendErrorMessage("Success", req, res);
     } else {
         sendErrorMessage("UnknownError", req, res);
     }
@@ -231,6 +232,22 @@ server.post(Constants.RECOVER_PASS_REQUEST, async function(req, res) {
 
 server.get(Constants.RECOVER_PASS_REQUEST, async function(req, res) {
     sendErrorMessage("NotImplemented", req, res);
+});
+
+server.post(Constants.EVENT_TRIGGERED_REQUEST, async function(req, res) {
+    let data = req.body;
+    let authToken = req.token;
+    
+
+    var now = new Date();
+
+    var filename = now.getFullYear() + (now.getMonth()+1) + now.getDate() + "_" + now.getHours() + now.getMinutes() + now.getSeconds() + ".jpg";
+
+    let buff = new Buffer.from(data['img'], 'base64');
+    fs.writeFileSync(__dirname + '/tmp/' + filename, buff);
+
+    logger.debug(Constants.EVENT_TRIGGERED_REQUEST + " saved to " + filename);
+    sendErrorMessage("Success", req, res);
 });
 
 // Listen on port
