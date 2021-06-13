@@ -168,7 +168,7 @@ const load = async () => {
     module.exports.getPendingPets = async function(token) {
         let userSession = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS)
             .findOne({[Constants.USER_TOKEN_KEY]:token})
-        if (!result.value) {
+        if (!userSession.value) {
             return null;
         }
         let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS)
