@@ -109,7 +109,7 @@ const load = async () => {
             [Constants.USER_EMAIL_KEY]:user
         });
         logger.debug("session already active", result);
-        if (result != null) { return JSON.stringify(result); }
+        if (result != null) { return result[Constants.USER_TOKEN_KEY]; }
 
         let token = serverUtils.generateToken(Constants.AUTH_TOKEN_LENGTH);
         result = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS).insertOne({
@@ -232,6 +232,42 @@ const load = async () => {
         logger.debug("Got user data =", result);
         if (result == null) { return serverUtils.findErrorByName("InvalidCredentials"); }
         
+        return result;
+    }
+
+    /*
+     * Get all stored data related to a user given the authentication token
+     *
+     * @param token {String} Authentication token used to identify a session
+     */
+    module.exports.getUserByToken = async function(token) {
+        // Check for correct credentials
+        let userSession = await module.exports.db.collection(Constants.MONGO_COLLECTION_SESSIONS)
+        .findOne({[Constants.USER_TOKEN_KEY]:token})
+        if (result == null) {
+            return serverUtils.findErrorByName("InvalidCredentials");
+        }
+        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_USERS)
+            .findOne({[Constants.Constants.USER_EMAIL_KEY]:userSession.value[Constants.USER_EMAIL_KEY]});
+            
+        return result;
+    }
+
+    /*
+     * Register a new device-triggered event
+     *
+     * @param deviceId {String} Unique code identifying the device that registered the event
+     * @param eventTime {int} Timing at which the event ocurred
+     * @param eventPicture {Base 64 string} Base 64-encoded picture taken during the event to identify the pet
+     * @param eventExtra {JSON} Extra data unique to the event (duration, weight difference, etc)
+     */
+    module.exports.registerEvent = async function(deviceId, eventTime, eventPicture, eventExtra) {
+        let result = await module.exports.db.collection(Constants.MONGO_COLLECTION_EVENTS).insertOne({
+            [Constants.DEVICE_ID_KEY]:deviceId, 
+            [Constants.EVENT_PICTURE_KEY]:eventPicture,
+            [Constants.EVENT_EXTRA]:eventExtra, 
+            [Constants.USER_TIMESTAMP_KEY]:eventTime
+        })
         return result;
     }
 }

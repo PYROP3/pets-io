@@ -9,6 +9,7 @@ module.exports.RECOVER_PASS_NONCE_REQUEST  = "/recoverPasswordNonce";
 module.exports.RECOVER_PASS_REQUEST        = "/recoverPassword";
 module.exports.EVENT_TRIGGERED_REQUEST     = "/eventTriggered";
 module.exports.GET_PENDING_PETS_REQUEST    = "/getPendingPets";
+module.exports.UPDATE_PET_PICS_REQUEST     = "/updatePetPictures";
 
 // Scripts
 module.exports.SCRIPT_PATH = "script/"
@@ -36,16 +37,22 @@ module.exports.USER_N_DEVICES_KEY    = "UserNDevices";
 module.exports.USER_EMAIL_KEY        = "UserEmail";
 module.exports.USER_PASS_KEY         = "UserPass";
 module.exports.USER_TIMESTAMP_KEY    = "Timestamp";
+module.exports.PET_PICTURES_KEY      = "PetPictures";
+module.exports.DEVICE_ID_KEY         = "DeviceID";
+module.exports.EVENT_PICTURE_KEY     = "EventPicture";
+module.exports.EVENT_EXTRA           = "EventExtra";
 
 // Authentication info
-module.exports.AUTH_TOKEN_LENGTH = 64;
+module.exports.AUTH_TOKEN_LENGTH = 256;
 module.exports.AUTH_TOKEN_TYPE = "Bearer";
 module.exports.AUTH_TOKEN_NAME = module.exports.AUTH_TOKEN_TYPE + " ";
 
 // Mongo collections
-module.exports.MONGO_COLLECTION_USERS = "users";
-module.exports.MONGO_COLLECTION_SESSIONS = "sessions";
-module.exports.MONGO_COLLECTION_PENDING_USERS = "pendingUsers";
+module.exports.MONGO_COLLECTION_USERS                = "users";
+module.exports.MONGO_COLLECTION_SESSIONS             = "sessions";
+module.exports.MONGO_COLLECTION_PENDING_USERS        = "pendingUsers";
+module.exports.MONGO_COLLECTION_PETS                 = "pets";
+module.exports.MONGO_COLLECTION_EVENTS               = "events";
 module.exports.MONGO_COLLECTION_PENDING_RECOVER_PASS = "passwordNonces";
 
 module.exports.SERVER_PORT_DEFAULT = 8080

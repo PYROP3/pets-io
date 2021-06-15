@@ -42,6 +42,20 @@
         }
     },
     {
+        "Name": "MissingArgumentError",
+        "HttpReturn": 400,
+        "Data": {
+            "en-us":{
+                "PrettyName": "Missing Argument Error",
+                "Description": "One of the expected arguments is missing"
+            },
+            "pt-br":{
+                "PrettyName": "Erro de argumento faltante",
+                "Description": "Um dos argumentos esperados está faltando"
+            }
+        }
+    },
+    {
         "Name": "ArgumentTypeError",
         "HttpReturn": 400,
         "Data": {

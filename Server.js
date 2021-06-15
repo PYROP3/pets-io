@@ -241,7 +241,7 @@ server.post(Constants.RECOVER_PASS_NONCE_REQUEST, async function(req, res) {
 
 server.post(Constants.RECOVER_PASS_REQUEST, async function(req, res) {
     let data = req.body;
-    let authResult = await mongo.recoverPassword(data["token"], data[Constants.USER_PASS_KEY]);
+    let authResult = await mongo.recoverPassword(data[Constants.USER_TOKEN_KEY], data[Constants.USER_PASS_KEY]);
     logger.debug("Password recovery result for " + JSON.stringify(data) + " is " + String(authResult))
     if (authResult) {
         sendErrorMessage("Success", req, res);
@@ -254,11 +254,35 @@ server.get(Constants.RECOVER_PASS_REQUEST, async function(req, res) {
     sendErrorMessage("NotImplemented", req, res);
 });
 
+server.post(Constants.UPDATE_PET_PICS_REQUEST, async function(req, res) {
+    var data = req.body;
+    let authToken = serverUtils.parseAuthToken(req.get("Authorization"));
+    logger.debug("Got authorization = " + req.get("Authorization"));
+
+    if (authToken == null) {
+        sendErrorMessage("MalformedToken", req, res);
+        return;
+    }
+
+    let authResult = await mongo.validateSession(authToken);
+
+    if (authResult == null) {
+        sendErrorMessage("AuthorizationNotRecognized", req, res);
+        return;
+    }
+
+    if (data[Constants.PET_PICTURES_KEY] == null) {
+        sendErrorMessage("MissingArgumentError", req, res);
+        return;
+    }
+});
+
 server.post(Constants.EVENT_TRIGGERED_REQUEST, async function(req, res) {
     let data = req.body;
     let authToken = req.token;
-    
 
+    // TODO validate device ID and token
+    
     var now = new Date();
 
     var filename = now.getFullYear() + (now.getMonth()+1) + now.getDate() + "_" + now.getHours() + now.getMinutes() + now.getSeconds() + ".jpg";
